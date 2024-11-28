@@ -32,6 +32,14 @@ export default {
                     DEFAULT: 'hsl(var(--warning))',
                     foreground: 'hsl(var(--warning-foreground))'
                 },
+                danger: {
+                    DEFAULT: 'hsl(var(--danger))',
+                    foreground: 'hsl(var(--danger-foreground))'
+                },
+                info: {
+                    DEFAULT: 'hsl(var(--info))',
+                    foreground: 'hsl(var(--info-foreground))'
+                },
                 secondary: {
                     DEFAULT: 'hsl(var(--secondary))',
                     foreground: 'hsl(var(--secondary-foreground))'
@@ -75,14 +83,18 @@ export default {
                 sm: 'calc(var(--radius) - 4px)'
             },
             keyframes: {
-                "caret-blink": {
-                    "0%,70%,100%": { opacity: "1" },
-                    "20%,50%": { opacity: "0" },
-                },
+                'caret-blink': {
+                    '0%,70%,100%': {
+                        opacity: '1'
+                    },
+                    '20%,50%': {
+                        opacity: '0'
+                    }
+                }
             },
             animation: {
-                "caret-blink": "caret-blink 1.25s ease-out infinite",
-            },
+                'caret-blink': 'caret-blink 1.25s ease-out infinite'
+            }
         }
     },
     plugins: [require("tailwindcss-animate")],

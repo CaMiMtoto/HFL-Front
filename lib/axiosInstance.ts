@@ -26,11 +26,6 @@ http.interceptors.request.use(
 );
 
 
-interface ApiResponse {
-    token: string; // Assuming the API returns a token
-    message: string;
-    action: number
-}
 
 http.interceptors.response.use(
     (response) => {

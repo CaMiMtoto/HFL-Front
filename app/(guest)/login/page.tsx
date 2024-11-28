@@ -24,6 +24,7 @@ import {
     AlertTitle,
 } from "@/components/ui/alert"
 import {AlertCircle, Loader} from "lucide-react";
+import {useRouter} from 'next/navigation'
 
 const formSchema = z.object({
     email: z.string().min(2).max(50).email("Invalid email address"),
@@ -32,9 +33,9 @@ const formSchema = z.object({
 })
 
 function Login() {
-
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const router = useRouter()
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
@@ -46,9 +47,7 @@ function Login() {
     })
 
     // 2. Define a submit handler.
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+    const onSubmit = (values: z.infer<typeof formSchema>) => {
         console.log(values)
         setError("");
         setLoading(true);
@@ -56,21 +55,25 @@ function Login() {
             email: values.email,
             password: values.password,
         }).then((response) => {
-            // On successful login, store token and any user data (if necessary)
-            const token = response.data.token;
-            if (token) {
-                localStorage.setItem('token', token); // Store token locally (or you can use cookies if needed)
+            console.log(response);
+            if (response.action === 1) {
+                const token = response.token;
+                if (token) {
+                    localStorage.setItem('token', token); // Store token locally (or you can use cookies if needed)
+                }
+                router.push("/client/dashboard");
+            } else {
+                setError("Invalid email or password");
             }
-            return response.data; // Return the response data
         })
             .catch((err) => {
                 console.log(err);
-                setError(err);
+                setError(err?.message ?? "An error occurred while logging in.");
             })
             .finally(() => {
                 setLoading(false);
             });
-    }
+    };
 
     return (
         <>
@@ -175,7 +178,7 @@ function Login() {
                                 <br/>
                                 <p className={'text-sm font-normal'}>
                                     Forgot your password?{" "}
-                                    <Link href="/forgot-password" className={"text-primary font-semibold"}>
+                                    <Link href="/public" className={"text-primary font-semibold"}>
                                         Reset Password
                                     </Link>
                                 </p>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Steps from "@/components/Steps";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -19,12 +20,12 @@ export default function Home() {
                         improving healthcare service delivery and ensuring regulatory compliance.
                     </p>
                     <div className={'flex gap-4 mt-4 items-center'}>
-                        <button type={'button'}
-                                className={'btn bg-success text-white hover:bg-success/80 rounded-xl py-3 px-5'}>Login
-                        </button>
-                        <button type={'button'}
-                                className={'btn bg-primary text-white hover:bg-primary/80 rounded-xl py-3 px-5'}>Register
-                        </button>
+                        <Link href={'/login'}
+                              className={'btn bg-success text-white hover:bg-success/80 rounded-xl py-3 px-5'}>Login
+                        </Link>
+                        <Link href={'/register'}
+                              className={'btn bg-primary text-white hover:bg-primary/80 rounded-xl py-3 px-5'}>Register
+                        </Link>
                     </div>
                 </div>
                 <div>

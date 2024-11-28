@@ -1,7 +1,6 @@
 // Login API function
 import {http} from "@/lib/axiosInstance";
 import axios from "axios";
-import Applicant from "@/interfaces/Applicant";
 import RegisterResponse from "@/interfaces/RegisterResponse";
 
 // Define the types for the request and response
@@ -21,6 +20,12 @@ export const loginUser = (credentials: LoginRequest) => {
     return http.post<LoginResponse>('/authenticate', {
         email,
         password,
+    }).then(({data}) => {
+        if (data.action === 1) {
+            return data;
+        } else {
+            return Promise.reject(data);
+        }
     });
 };
 

@@ -43,8 +43,12 @@ body {
         --sidebar-ring: 217.2 91.2% 59.8%;
         --warning: 38 92% 50%;
         --warning-foreground: 48 96% 89%;
-        --success: 120 100% 40%;
+        --success: 166.86 100% 39.8%;
         --success-foreground: 130 96% 89%;
+        --danger: 340 92% 50%;
+        --danger-foreground: 480 96% 89%;
+        --info: 210 92% 50%;
+        --info-foreground: 48 96% 89%;
     }
 
     .dark {
