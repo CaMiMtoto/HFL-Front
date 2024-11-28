@@ -4,6 +4,7 @@ import {Figtree} from "next/font/google";
 import Image from "next/image";
 // import Link from "next/link";
 import NavBar from "@/components/NavBar";
+import {Toaster} from "@/components/ui/toaster";
 
 const nextFont = Figtree({
     subsets: ['latin'],
@@ -85,7 +86,7 @@ export default function RootLayout({
             </footer>
         </div>
 
-
+        <Toaster />
         </body>
         </html>
     );

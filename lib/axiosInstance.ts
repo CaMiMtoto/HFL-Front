@@ -35,7 +35,7 @@ interface ApiResponse {
 http.interceptors.response.use(
     (response) => {
         if (response.data.action == 0) {
-            return Promise.reject(response.data.message);
+            return Promise.reject(response.data);
         }
         return response;
     },

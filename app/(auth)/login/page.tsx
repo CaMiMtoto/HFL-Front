@@ -74,12 +74,12 @@ function Login() {
 
     return (
         <>
-            <div className="my-4 grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
-                <div className="col-span-2 order-2 lg:order-1">
+            <div className="my-4 grid grid-cols-1 lg:grid-cols-2 lg:gap-4">
+                <div className="order-2 lg:order-1">
                     <div className="  bg-no-repeat bg-cover">
                         <img
                             src="https://licensing.moh.gov.rw/assets/login-bf3122aa.png"
-                            className="img-fluid max-h-[600px]"
+                            className="tw-max-h-[600px]"
                             alt="Image"/>
                     </div>
                 </div>

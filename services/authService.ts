@@ -1,6 +1,8 @@
 // Login API function
 import {http} from "@/lib/axiosInstance";
 import axios from "axios";
+import Applicant from "@/interfaces/Applicant";
+import RegisterResponse from "@/interfaces/RegisterResponse";
 
 // Define the types for the request and response
 interface LoginRequest {
@@ -47,34 +49,28 @@ export const logout = async () => {
 interface RegisterRequest {
     name: string;
     email: string;
-    password: string;
-    // Add any other request fields from your API
+    phone: string;
 }
 
-interface RegisterResponse {
-    token: string;
-    user: RegisterRequest;
-}
 
-export const register = async (credentials: RegisterRequest): Promise<RegisterResponse> => {
-    const {email, password} = credentials;
-    try {
-        const response = await http.post<RegisterResponse>('/register', {
-            email,
-            password,
-            // Add any other request fields from your API
-        });
-        return response.data; // Return the response data
-    } catch (error) {
-        // Handle error response
-        if (axios.isAxiosError(error)) {
-            // Axios-specific error handling
-            console.error('Registration failed:', error.response?.data || error.message);
-            throw new Error(error.response?.data?.message || 'Registration failed');
-        } else {
-            // Generic error handling
-            console.error('Unexpected error:', error);
-            throw new Error('An unexpected error occurred');
-        }
-    }
+export const registerUser = (credentials: RegisterRequest) => {
+    const {email, name, phone} = credentials;
+    return http.post<RegisterResponse>('/register/applicant', {
+        email,
+        name,
+        phone,
+    });
 };
+
+
+export function resendOtp({applicantId}: { applicantId: number }) {
+    return http.post<RegisterResponse>(`/register/resend-otp`, {
+        "applicantId": applicantId
+    }).then(({data}) => {
+        if (data.action === 1) {
+            return data;
+        } else {
+            return Promise.reject(data);
+        }
+    })
+}
