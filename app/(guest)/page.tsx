@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Steps from "@/components/Steps";
 import Link from "next/link";
 
