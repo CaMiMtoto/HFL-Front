@@ -1,8 +1,30 @@
+'use client'
 import React from 'react'
-import {Edit, File, FileText, Trash} from "lucide-react";
+import {Edit, FileText, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button";
+import {http} from "@/lib/axiosInstance";
+
+;
 
 function RecentApplications() {
+    const [applications, setApplications] = React.useState([]);
+
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState("");
+    const fetchApplications = async () => {
+        try {
+            const response = await http.get('/application/recent');
+            setApplications(response.data);
+        } catch (e) {
+            console.error(e);
+            setError("Failed to fetch applications data.");
+        }
+        setLoading(false);
+    }
+    React.useEffect(() => {
+        fetchApplications().then(() => console.log("applications fetched"));
+    }, []);
+
     return (
         <div>
             <h1 className={'text-xl font-bold mb-1 text-gray-800'}>
@@ -15,7 +37,7 @@ function RecentApplications() {
             <div>
                 <div className="flex flex-col gap-2 my-3">
                     {
-                        Array(5).fill(null).map((_, index) => (
+                        applications.map((item, index) => (
                             <div
                                 key={index}
                                 className="border border-dotted rounded-md p-2 border-gray-100 bg-gray-50">

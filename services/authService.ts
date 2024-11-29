@@ -68,7 +68,7 @@ export const registerUser = (credentials: RegisterRequest) => {
 };
 
 
-export function resendOtp({applicantId}: { applicantId: number }) {
+export function resendOtp(applicantId: number) {
     return http.post<RegisterResponse>(`/register/resend-otp`, {
         "applicantId": applicantId
     }).then(({data}) => {

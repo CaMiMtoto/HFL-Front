@@ -22,7 +22,7 @@ function LicensesCard() {
 
     useEffect(() => {
         fetchLicenses();
-    });
+    }, []);
 
     return (
         <div>

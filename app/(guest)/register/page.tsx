@@ -23,22 +23,21 @@ import {
     AlertTitle,
 } from "@/components/ui/alert"
 import {AlertCircle, Loader} from "lucide-react";
-import OtpModal from "@/components/auth/OtpModal";
 import {useToast} from "@/hooks/use-toast";
-import Applicant from "@/interfaces/Applicant";
+import {useRouter} from "next/navigation";
+import {encodeId} from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string({message: "Name is required"}).min(2, "Name must be at least 2 characters long").max(50, "Name must be at most 50 characters long"),
     email: z.string({message: "Email is required"}).min(2, "Email must be at least 2 characters long").max(50, "Email must be at most 50 characters long").email("Invalid email address"),
-    phone: z.string({message: "Phone number is required"}).min(10, "Phone number must be at least 10 digits long").max(50, "Phone number must be at most 50 digits long").regex(/^[0-9]+$/, 'Invalid phone number format (only numbers are allowed)'),
+    phone: z.string({message: "Phone number is required"}).min(10, "Phone number must be at least 10 digits long").max(50, "Phone number must be at most 50 digits long"),
 });
 
 function Register() {
     const {toast} = useToast()
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [showOtpModal, setShowOtpModal] = useState(false);
-    const [applicant, setApplicant] = useState(null as Applicant | null);
+    const router = useRouter();
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
@@ -61,21 +60,20 @@ function Register() {
         }).then((response) => {
             const data = response.data;
             if (data.action === 0) {
-                setError(data.message);
+                setError(data?.message ?? "An error occurred while registering. Please try again later.");
             } else {
                 toast({
                     variant: "default",
                     title: "Registration successful",
                     description: "Please check your email for the OTP",
                     color: "success"
-                })
-                setShowOtpModal(true);
-                setApplicant(data.applicant);
+                });
+                router.push(`/otp?token=${data.applicant.verifyToken}&app-id=${encodeId(data.applicant.id)}`);
             }
         })
             .catch((err) => {
                 console.log(err);
-                setError(err);
+                setError(err?.message || "An error occurred while registering. Please try again later.");
             })
             .finally(() => {
                 setLoading(false);
@@ -176,7 +174,6 @@ function Register() {
                 </div>
             </div>
 
-            <OtpModal isOpen={showOtpModal} applicant={applicant} />
         </>
     )
 }

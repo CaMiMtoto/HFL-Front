@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert"
 import {AlertCircle, Loader} from "lucide-react";
 import {useRouter} from 'next/navigation'
+import {toast} from "@/hooks/use-toast";
 
 const formSchema = z.object({
     email: z.string().min(2).max(50).email("Invalid email address"),
@@ -47,32 +48,49 @@ function Login() {
     })
 
     // 2. Define a submit handler.
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values)
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setError("");
         setLoading(true);
-        loginUser({
-            email: values.email,
-            password: values.password,
-        }).then((response) => {
-            console.log(response);
+        try {
+            // Simulate login call
+            const response = await loginUser({
+                email: values.email,
+                password: values.password,
+            });
+
             if (response.action === 1) {
                 const token = response.token;
-                if (token) {
-                    localStorage.setItem('token', token); // Store token locally (or you can use cookies if needed)
+
+                // Call the API to set the cookie
+                const res = await fetch('/api/auth/set-cookie', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({token}),
+                });
+
+                if (res.ok) {
+                    toast({
+                        className: "bg-success/10",
+                        title: "Login Success",
+                        description: "Login successfully, redirecting to dashboard",
+                    });
+
+                    // Redirect to dashboard after successful login
+                    router.push("/client/dashboard");
+                } else {
+                    setError('Failed to set token cookie.');
                 }
-                router.push("/client/dashboard");
             } else {
                 setError("Invalid email or password");
             }
-        })
-            .catch((err) => {
-                console.log(err);
-                setError(err?.message ?? "An error occurred while logging in.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        } catch (err) {
+            console.log(err);
+            setError('An error occurred during login.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

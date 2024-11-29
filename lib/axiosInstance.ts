@@ -1,5 +1,6 @@
-// lib/axiosInstance.js
+
 import axios, {AxiosError} from 'axios';
+import {getCookie} from "cookies-next/client";
 
 // Create an instance of Axios
 const http = axios.create({
@@ -7,16 +8,16 @@ const http = axios.create({
     headers: {
         'Content-Type': 'application/json', // Set default headers
         'api-token': process.env.NEXT_PUBLIC_API_TOKEN,
-    },
+    }
 });
 
 // Optionally, you can add request/response interceptors here
-http.interceptors.request.use(
-    (config) => {
-        // You can add token or any additional configuration here, for example:
-        const token = localStorage.getItem('token');
+http.interceptors.request.use(async (config) => {
+        // get token from cookies
+        const token = getCookie('token');
+        console.log(token);
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
     },
@@ -24,7 +25,6 @@ http.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
 
 
 http.interceptors.response.use(

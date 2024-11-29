@@ -1,9 +1,9 @@
-import {ReactNode, Suspense} from "react";
+"use client"
+import {ReactNode, Suspense, useState} from "react";
 import Loading from "@/app/loading";
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/app-sidebar"
-import {cookies} from "next/headers"
-import {ChevronDown, SquareChevronLeft, User} from "lucide-react";
+import {ChevronDown, Loader, SquareChevronLeft, User} from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuItem,
@@ -11,29 +11,50 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import {useRouter} from "next/navigation";
 
-export default async function DashboardLayout({
-                                                  children,
-                                              }: {
+export default function DashboardLayout({
+                                            children,
+                                        }: {
     children: ReactNode
 }) {
-    const cookieStore = await cookies()
-    const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
 
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const handleLogout = async (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        // setLoading(true);
+        try {
+            const res = await fetch('/api/auth/logout', {
+                method: 'GET',
+            });
+
+            if (res.ok) {
+                // Redirect to login after successful logout
+                router.push('/login');
+            }
+        } catch (error) {
+            console.error('Failed to log out:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
-        <SidebarProvider defaultOpen={defaultOpen}>
+        <SidebarProvider>
             <AppSidebar/>
             <main className={' w-full'}>
                 <div className={'flex justify-between items-center mb-5 w-full px-5 border-b'}>
                     <SidebarTrigger
-                        type="button" variant={"outline"}  className={'flex cursor-pointer items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200'}>
+                        type="button" variant={"outline"}
+                        className={'flex cursor-pointer items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200'}>
                         <SquareChevronLeft/>
                     </SidebarTrigger>
                     <DropdownMenu>
                         <DropdownMenuTrigger
                             className={'flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded-md focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75'}>
                             <div className={'flex items-start px-2 py-1 gap-2'}>
-                                <div className={'h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center'}>
+                                <div
+                                    className={'h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center'}>
                                     <User/>
                                 </div>
                                 <div>
@@ -50,7 +71,9 @@ export default async function DashboardLayout({
                             <DropdownMenuItem>Profile</DropdownMenuItem>
                             <DropdownMenuItem>Billing</DropdownMenuItem>
                             <DropdownMenuItem>Team</DropdownMenuItem>
-                            <DropdownMenuItem>Subscription</DropdownMenuItem>
+                            <DropdownMenuItem className={'cursor-pointer'} onClick={handleLogout}>
+                                Logout {loading && <Loader className={"w-16 h-16 text-gray-500 animate-spin"}/>}
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
 
